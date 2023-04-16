@@ -1,9 +1,3 @@
-name: Publish documentation
-
-on:
-  push:
-    branches:
-      - master
 name: Docs
 
 on:
@@ -12,18 +6,20 @@ on:
       - main
 
 jobs:
-  docs:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Doxygen
-      run: sudo apt-get install doxygen graphviz
-    - name: Generate Documentation
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y doxygen graphviz
+    - name: Generate docs
       run: doxygen Doxyfile
-    - name: Publish to GitHub Pages
+    - name: Publish docs
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/html
-        commit_message: "Publish documentation"
-
